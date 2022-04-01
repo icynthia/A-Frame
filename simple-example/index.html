@@ -1,0 +1,199 @@
+<!doctype html>
+<html>
+    <head>
+      <title>Wata Academy VR </title>
+      <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+      
+      <!-- Set Component https://aframe.io/docs/1.3.0/introduction/interactions-and-controllers.html#handling-events-with-event-set-component -->
+      <script src="https://unpkg.com/aframe-event-set-component@3.0.3/dist/aframe-event-set-component.min.js"></script>
+
+      <!-- Physics https://github.com/n5ro/aframe-physics-system/blob/HEAD/AmmoDriver.md -->
+      <script src="https://mixedreality.mozilla.org/ammo.js/builds/ammo.wasm.js"></script>  
+      <script src="https://cdn.jsdelivr.net/gh/n5ro/aframe-physics-system@v4.0.1/dist/aframe-physics-system.min.js"></script>
+      
+      <script src="https://unpkg.com/aframe-environment-component@1.2.0/dist/aframe-environment-component.min.js"></script>
+
+
+      
+      <!-- Super Hands https://github.com/wmurphyrd/aframe-super-hands-component -->
+      <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.1/dist/aframe-extras.misc.min.js"></script>
+      <script src="https://unpkg.com/super-hands@^3.0.3/dist/super-hands.min.js"></script>
+
+      <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.1/dist/aframe-extras.min.js"></script>
+
+            
+
+    </head>
+    
+    <body>
+        <a-scene physics="driver: ammo; debug: false; gravity: -9.8; debugDrawMode: 1">
+            <a-assets>
+                <img id="sky" src="assets/textures/gradient.jpg">
+
+                <img id="brick" src="assets/textures/brick.jpg">
+                <img id="brick-nrm" src="assets/textures/brick-nrm.jpg">
+              
+                <a-asset-item id="avatar2" src="assets/models/cyn-job.glb"></a-asset-item>
+
+                <a-asset-item id="mario" src="assets/models/mario.glb"></a-asset-item>
+                <a-asset-item id="ques" src="assets/models/ques.glb"></a-asset-item>
+
+
+                <!-- CC By Alfking49 https://sketchfab.com/3d-models/super-mario-bros-level-1-1-b0d3fac19ecb4220866af47237e79c13
+                     CC By JDanielHE https://sketchfab.com/3d-models/question-block-mario-bros-1f63d9709a9542a2914185d229782eb1 -->
+
+          </a-assets>
+          
+          <!-- SKY -->
+          <a-sky color="#987654"></a-sky>
+          <a-sky src="#sky"></a-sky>
+          
+          <a-entity environment="preset: forest; groundColor: #445; lighting: none; shadow: true;"></a-entity>
+          
+          
+          
+          <!-- CAMERA AND CURSOR -->
+          <a-entity position="0 1.6 2">
+            <a-camera look-controls-enabled="true">
+              <a-entity cursor="fuse: true; fuseTimeout: 1000" position="0 0 -1"
+                              geometry="primitive: sphere; radius: 0.005"
+                              material="color: #000000; shader: flat; opacity: 0.5"
+                              raycaster="objects: .clickable">
+                    </a-entity>
+            </a-camera>
+          </a-entity>
+          
+          
+          <!-- LIGHTS -->
+          <a-entity light="type: point;
+                        target: #ball;
+                        color: #ff00f7;
+                        angle: 45;
+                        penumbra: 0.2;
+                        castShadow: true"
+                    position="0 3 1">
+          </a-entity>
+          
+          <a-entity light="type: point;
+                          color: #aaa;
+                          angle: 30;
+                          penumbra: 0.1;
+                          castShadow: true"
+                    position="0 7 -3"
+                    rotation="-90 0 0">
+          </a-entity>
+          
+          <a-entity light="type: ambient; intensity: 0.8"></a-entity>
+          
+          <a-light type="ambient" intensity="0.3" color="#001155"></a-light>
+          
+          <a-entity light="color: #fff; angle: 180; penumbra: 0.1; castShadow: true"
+                    position="-0.17737 2.60675 -3.05742"
+                    rotation="-90 0 0">
+          </a-entity>
+          
+                    
+          
+          
+          <!-- GROUND -->
+          
+          <a-plane id="ground" height="100" width="100" rotation="-90 0 0"
+                   color="#444"
+                   material="src: #brick;
+                             repeat: 15 15;
+                             normal-map: #brick-nrm;
+                             normal-texture-repeat:15 15"
+                   ammo-body="type: static;"
+                   ammo-shape="type: box"
+                   position="0 0 0">
+          </a-plane>
+          
+          
+          
+          
+          <!-- CONTROLS -->
+          <a-entity wasd-controls 
+                    position="0 1 1"
+                    capture-mouse
+                    raycaster="objects: .obj" cursor="rayOrigin:mouse"
+                    static-body="shape: sphere; sphereRadius: 0.001"
+                    super-hands="colliderEvent: raycaster-intersection;
+                             colliderEventProperty: els;
+                             colliderEndEvent:raycaster-intersection-cleared;
+                             colliderEndEventProperty: clearedEls;">
+          </a-entity>
+          
+
+          
+          <!-- PRIMITIVES WITH PHYSICS AND EVENTS -->
+          <a-sphere id="ball" class="obj"
+                    color="#4CC3D9"
+                    position="0.1 5 -3"
+                    scale="3 3 3"
+                    ammo-body="type: dynamic; linearDamping: 0.5; angularDamping: 0.7; mass: 10"
+                    ammo-shape="type: sphere"
+                    radius="0.19"
+                    ammo-restitution="1.5" 
+                    
+                    hoverable grabbable stretchable draggable droppable
+                    
+                    event-set__enter="_event: mouseenter; material.color: #876543"
+                    event-set__leave="_event: mouseleave; material.color: #4CC3D9">
+          </a-sphere>
+          
+          
+          <a-torus position="0 2 -3"
+                   rotation="0 20 0"
+                   scale="1 1 4"
+                   color="#876543"
+                   ammo-body="type: dynamic; linearDamping: 0.05; angularDamping: 0.7; mass: 0.03"
+                   ammo-shape="type: hacd"
+                   segments-tubular="9"
+                   segments-radial="6"
+                   radius="1"
+                   radius-tubular="0.02"
+                  visible="true">
+          </a-torus>
+          
+          
+          <!-- PRIMITIVES, DRAG AND ANIMATION -->
+
+          
+          <a-box class="obj" 
+                 color="white" position="-2 2 -3"
+                  material="src: #brick;
+                             repeat: 0.2 0.2;
+                             normal-map: #brick-nrm;
+                             normal-texture-repeat:1 1"
+                 opacity="0.5"
+                 hoverable grabbable stretchable draggable droppable 
+                 event-set__color="_event: collide; material.color: #876543"
+                 event-set__rescol="_event: click; opacity:1">
+           </a-box>
+          
+          
+          
+          
+           <!-- MODELS -->
+          
+           <a-gltf-model src="#ques" class="obj" id="obj" 
+                         scale="1 1 1" position="0 5 -6"
+                         rotation="0 0 0"
+                         geometry="primitive: box; width: 1; height:1; depth: 1"
+                         hoverable grabbable stretchable draggable droppable
+                         animation="property: rotation; to: 0 360 0; loop: true; dur: 5000; easing:linear;">
+           </a-gltf-model>
+          
+          
+           <a-gltf-model src="#avatar2" class="obj"
+                         scale="2 2 2" position="3 0 -6"
+                         hoverable grabbabsle stretchable draggable droppable animation-mixer>
+           </a-gltf-model>
+          
+          
+          <a-gltf-model src="#mario" modify-materials scale="0.4 0.4 0.4" position="0 0 -5" ></a-gltf-model> 
+          
+           
+        </a-scene>
+    </body>
+</html>
